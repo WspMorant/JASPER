@@ -1,0 +1,71 @@
+def print_board(board):
+    # 打印表头
+    print("   ", end="")
+    for i in range(15):
+        print(f"{i:2d}", end=" ")
+    print()
+    for y in range(15):
+        print(f"{y:2d}:", end=" ")
+        for x in range(15):
+            if board[y][x] == 0:
+                print("·", end="  ")
+            elif board[y][x] == 1:
+                print("●", end="  ")  # 黑棋
+            else:
+                print("○", end="  ")  # 白棋
+        print()
+
+
+def check_win(board, x, y, player):
+    # 四个方向
+    directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
+    for dx, dy in directions:
+        cnt = 1
+        # 正方向
+        cx, cy = x + dx, y + dy
+        while 0 <= cx < 15 and 0 <= cy < 15 and board[cy][cx] == player:
+            cnt += 1
+            cx += dx
+            cy += dy
+        # 反方向
+        cx, cy = x - dx, y - dy
+        while 0 <= cx < 15 and 0 <= cy < 15 and board[cy][cx] == player:
+            cnt += 1
+            cx -= dx
+            cy -= dy
+        if cnt >= 5:
+            return True
+    return False
+
+
+def main():
+    # 15*15棋盘，0空，1黑，2白
+    board = [[0 for _ in range(15)] for _ in range(15)]
+    player = 1
+    while True:
+        print_board(board)
+        name = "黑棋●" if player == 1 else "白棋○"
+        try:
+            x = int(input(f"\n轮到{name}，输入x坐标："))
+            y = int(input(f"输入y坐标："))
+        except ValueError:
+            print("请输入数字！")
+            continue
+        if not (0 <= x < 15 and 0 <= y < 15):
+            print("坐标超出棋盘范围！")
+            continue
+        if board[y][x] != 0:
+            print("这个位置已经有棋子了！")
+            continue
+
+        board[y][x] = player
+        if check_win(board, x, y, player):
+            print_board(board)
+            print(f"\n🎉 {name} 获胜！")
+            break
+        # 切换玩家
+        player = 2 if player == 1 else 1
+
+
+if __name__ == "__main__":
+    main()
